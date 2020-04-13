@@ -6,7 +6,7 @@ public class Insert_msg extends IConnectImpl{
 	
 	String name;
 	String chat;
-	Date time;
+	String time;
 
 	public Insert_msg(String name, String chat) {
 		super("kosmo","1234");
@@ -16,14 +16,15 @@ public class Insert_msg extends IConnectImpl{
 	@Override
 	public void execute() { 
 		try {
-			String sql = "insert into chating_tb values(seq_chat.nextval,?,?,?)";
+			String sql = "INSERT INTO chating_tb "
+					+ " VALUES(seq_chat.nextval,?,?,to_char(sysdate,'HH:MI'))";
 			psmt = con.prepareStatement(sql);
 			
 			psmt.setString(1, name);
 			psmt.setString(2, chat);
-			psmt.setDate(3, time);
 			
-			System.out.println("저장되었습니다.");
+			int affected = psmt.executeUpdate();
+			System.out.println(affected+"개가 저장되었습니다.");
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
