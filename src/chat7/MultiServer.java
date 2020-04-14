@@ -97,7 +97,6 @@ public class MultiServer {
 	
 		while(it.hasNext()) {
 			String n = it.next();
-			System.out.println("2222");
 			try {
 				PrintWriter it_out = (PrintWriter)clientMap.get(n);
 			
@@ -174,17 +173,15 @@ public class MultiServer {
 								
 							}
 						}
-						else if(true) {
+						else if(s.substring(1, 3).equalsIgnoreCase("to")) {
 							int index1 = s.indexOf(" ");
 							int index2 = s.indexOf(" ", index1+1);
 							String you = s.substring(index1+1, index2-1);
 							String talk = s.substring(index2+1);
-							System.out.println("a");
 							wisper(name, you, talk);
 						}
 					}
 					else {
-						System.out.println("aass");
 						System.out.println(name +" >> "+ s);
 						new Insert_msg(name, s).execute();
 						sendAllMsg(name, s);
