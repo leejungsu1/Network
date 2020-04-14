@@ -167,10 +167,8 @@ public class MultiServer {
 							Iterator<String> it = clientMap.keySet().iterator();
 							while(it.hasNext()) {
 								String list = it.next();
-								
-									out.println("현재 접속자 : "+ list);
-									System.out.println("현재 접속자 : "+ list);
-								
+								out.println("현재 접속자 : "+ list);
+								System.out.println("현재 접속자 : "+ list);
 							}
 						}
 						else if(s.substring(1, 3).equalsIgnoreCase("to")) {
