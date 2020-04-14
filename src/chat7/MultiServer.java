@@ -5,10 +5,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 
 public class MultiServer {
@@ -58,7 +61,6 @@ public class MultiServer {
 		}
 	}
 	
-	
 	public static void main(String[] args) {
 		MultiServer ms = new MultiServer();
 		ms.init();
@@ -79,10 +81,33 @@ public class MultiServer {
 				없는경우에는 메세지만 클라이언트로 전송한다.
 				 */
 				if(name.equals("")) {
-					it_out.println(msg);
+					it_out.println (msg);
 				}
 				else {
 					it_out.println("["+ name +"]:"+ msg);
+				}
+			}
+			catch (Exception e) {
+				System.out.println("예외:"+ e);
+			}
+		}
+	}
+	public void wisper(String name, String you, String msg) {
+		Iterator<String> it = clientMap.keySet().iterator();
+	
+		while(it.hasNext()) {
+			String n = it.next();
+			System.out.println("2222");
+			try {
+				PrintWriter it_out = (PrintWriter)clientMap.get(n);
+			
+				if(you.equalsIgnoreCase("n")) {
+					it_out.println ("["+ name +"]:"+ msg);
+					break;
+				}
+				else {
+					it_out.println("["+ name +"]:"+ msg);
+					break;
 				}
 			}
 			catch (Exception e) {
@@ -103,7 +128,7 @@ public class MultiServer {
 			try {
 				out = new PrintWriter(this.socket.getOutputStream(), true);
 				in = new BufferedReader
-						(new InputStreamReader(this.socket.getInputStream()));
+						(new InputStreamReader(this.socket.getInputStream(),"UTF-8"));
 			}
 			catch (Exception e) {
 				System.out.println("예외:"+ e);
@@ -119,6 +144,7 @@ public class MultiServer {
 			try {
 				//클라이언트의 이름을 읽어와서 저장
 				name = in.readLine();
+				name = URLDecoder.decode(name, "UTF-8");
 				//접속한 클라이언트에게 새로운 사용자의 입장을 알림.
 				//접속자를 제외한 나머지 클라이언트만 입장메세지를 받는다.
 				sendAllMsg("", name +"님이 입장하셨습니다.");
@@ -133,11 +159,36 @@ public class MultiServer {
 				//입력한 메세지는 모든 클라이언트에게 Echo된다.
 				while(in != null) {
 					s = in.readLine();
-					if(s == null) break;
-						
-					System.out.println(name +" >> "+ s);
-					new Insert_msg(name, s).execute();
-					sendAllMsg(name, s);
+					s = URLDecoder.decode(s,"UTF-8");
+					if(s == null) {
+						break;
+					}
+					if(s.charAt(0)=='/') {
+						if(s.equalsIgnoreCase("/list")) {
+							Iterator<String> it = clientMap.keySet().iterator();
+							while(it.hasNext()) {
+								String list = it.next();
+								
+									out.println("현재 접속자 : "+ list);
+									System.out.println("현재 접속자 : "+ list);
+								
+							}
+						}
+						else if(true) {
+							int index1 = s.indexOf(" ");
+							int index2 = s.indexOf(" ", index1+1);
+							String you = s.substring(index1+1, index2-1);
+							String talk = s.substring(index2+1);
+							System.out.println("a");
+							wisper(name, you, talk);
+						}
+					}
+					else {
+						System.out.println("aass");
+						System.out.println(name +" >> "+ s);
+						new Insert_msg(name, s).execute();
+						sendAllMsg(name, s);
+					}
 				}
 			}
 			catch (Exception e) {
