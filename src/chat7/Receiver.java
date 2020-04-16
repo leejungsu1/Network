@@ -24,14 +24,16 @@ public class Receiver extends Thread{
 	}
 	
 	public void run() {
-		
-		
 		while(in!=null) {
 			try {
-				System.out.println(in.readLine());
+				String n = in.readLine();
+				System.out.println(n);
+				if(n.equals("채팅이 종료됩니다.")) {
+					break;
+				}
 			}
 			catch (SocketException e) {
-				System.out.println("SocketException발생됨");
+//				System.out.println("SocketException발생됨");
 				break;
 			}
 			catch (Exception e) {

@@ -36,7 +36,7 @@ public class IConnectImpl implements IConnect{
 		}
 	}
 	@Override
-	public void execute() {
+	public void execute() throws Exception {
 	}
 	@Override
 	public void close() {

@@ -6,14 +6,15 @@ import java.util.Scanner;
 public class MultiClient {
 
 	public static void main(String[] args) {
-		
-		System.out.println("이름을 입력하세요.");
-		Scanner scanner = new Scanner(System.in);
-		String s_name = scanner.nextLine();
-		//Sender가 기능을 가져가므로 여기서는 필요없음
-		//PrintWriter out = null;
-		//Receiver가 기능을 가져가므로 여기서는 필요없음
-		//BufferedReader in = null;
+		String s_name;
+		while(true) {
+			System.out.println("이름을 입력하세요.");
+			Scanner scanner = new Scanner(System.in);
+			s_name = scanner.nextLine();
+			if(!(s_name.equals(""))) {
+				break;
+			}
+		}
 		try {
 			String ServerIP = "localhost";
 			if(args.length>0) {

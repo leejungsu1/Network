@@ -29,22 +29,28 @@ public class Sender extends Thread {
 		Scanner s = new Scanner(System.in);
 		
 		try {
-			
-			out.println(URLEncoder.encode(name, "UTF-8"));
-			
+			out.println(name);
+//			out.println(URLEncoder.encode(name, "UTF-8"));
+			String s2;
 			while(out!=null) {
 				try {
-					String s2 = s.nextLine();
+					while(true) {
+						s2 = s.nextLine();
+						if(!(s2.equals(""))) {
+							break;
+						}
+					}
 					if(s2.equalsIgnoreCase("Q")) {
 						break;
 					}
 					else {
-						out.println(URLEncoder.encode(s2, "UTF-8"));
+						out.println(s2);
+//						out.println(URLEncoder.encode(s2, "UTF-8"));
 					}
 				}
-				catch (UnsupportedEncodingException e) {
-					System.out.println(e.getMessage());
-				}
+//				catch (UnsupportedEncodingException e) {
+//					System.out.println(e.getMessage());
+//				}
 				catch (Exception e) {
 					System.out.println("예외>Sender>run1:"+e);
 				}
@@ -52,9 +58,9 @@ public class Sender extends Thread {
 			out.close();
 			socket.close();
 		}
-		catch (UnsupportedEncodingException e) {
-			System.out.println(e.getMessage());
-		}
+//		catch (UnsupportedEncodingException e) {
+//			System.out.println(e.getMessage());
+//		}
 		catch (Exception e) {
 			System.out.println("예외>Sender>run2:"+e);
 		}
