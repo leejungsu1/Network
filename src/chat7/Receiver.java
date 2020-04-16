@@ -29,7 +29,7 @@ public class Receiver extends Thread{
 				String n = in.readLine();
 				System.out.println(n);
 				if(n.equals("채팅이 종료됩니다.")) {
-					break;
+					System.exit(0);
 				}
 			}
 			catch (SocketException e) {

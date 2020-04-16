@@ -235,8 +235,8 @@ class MultiServerT extends Thread {
 //								int index = answer.indexOf(" ");
 								String no_black = answer.substring(index+1);
 								new update_msg2(no_black).execute();
+								new delete_msg(no_black).execute();
 								out.println("해제 되었습니다.");
-								new delete_msg(no_black);
 							}
 						}
 					}
