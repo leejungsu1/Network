@@ -70,7 +70,7 @@ public class MultiServer {
 				PrintWriter it_out = (PrintWriter) clientMap.get(it.next());
 				// 클라이언트에게 메세지를 전달한다.
 				/*
-				 * 매개변수 name이 있는 경우에는 이름+메세지 없는경우에는 메세지만 클라이언트로 전송한다.
+				 매개변수 name이 있는 경우에는 이름+메세지 없는경우에는 메세지만 클라이언트로 전송한다.
 				 */
 				if (name.equals("")) {
 					it_out.println(msg);
@@ -82,22 +82,27 @@ public class MultiServer {
 			}
 		}
 	}
-
+	//귓속말을 보내는 상대가 있는지 없는지 확인하기 위해 wisper()를 boolean값을 반환하도록 생성
 	public boolean wisper(String name, String you, String msg) {
 		Iterator<String> it = clientMap.keySet().iterator();
 
 		while (it.hasNext()) {
 			String n = it.next();
 			try {
+				//특정대상에게만 귓속말을 보내야하므로  그 대상의 value값을 찾음
 				PrintWriter it_out = (PrintWriter) clientMap.get(n);
 				if (you.equalsIgnoreCase(n)) {
+					//한번이라도 이름이 비교가 되어 귓속말이 전달이 되면 true값 반환
 					it_out.println("[" + name + "]:" + msg);
 					return true;
 				}
-			} catch (Exception e) {
-				System.out.println("예외:" + e);
+			} 
+			catch (Exception e) {
+//				System.out.println("예외:" + e);
+				e.printStackTrace();
 			}
 		}
+		//그렇지 못할 경우 false값 반환
 		return false;
 	}
 
@@ -159,42 +164,60 @@ class MultiServerT extends Thread {
 					if(s == null) {
 						break;
 					}
+					//명령어 앞에 '/'가 붙어있으므로 '/'부터 찾아준 후
 					if(s.charAt(0)=='/') {
+						//equalsIgnoreCase()를 이용하여 '/list'를 찾아준다.
 						if(s.equalsIgnoreCase("/list")) {
 							Iterator<String> it = clientMap.keySet().iterator();
 							out.println("현재 접속자 ");
 							while(it.hasNext()) {
+								//다음의 클라이언트의 이름을 반환하는 값을 변수로 선언하여 출력해준다.
 								String list = it.next();
 								out.println(list);
 								System.out.println("현재 접속자 : "+ list);
 							}
 						}
+						//귓속말을 보낼수있는 명령어인 to를 보내는 대상, 메세지등을 같이 보내므로 substring()으로 문자열을 나눈다.
 						else if(s.substring(1, 3).equalsIgnoreCase("to")) {
+							//indexOf()를 이용하여 to와 이름 메세지를 나눌 index값을 찾아낸다.
 							int index1 = s.indexOf(" ");
 							int index2 = s.indexOf(" ", index1+ 1);
+							//'/to'만 입력시 예외가 발생하므로 처리해준다.
 							if(index1==-1) {}
+							//'/to '만 입력시에도 예외가 발생하므로 처리해준다.
 							else if(index1+1 == s.length()) {}
+							else if(index2+1==s.length()){}
+							//'/to 이름'이면 indext2값을 찾지 못한다. 그래서 고정귓속말이 실행된다.
 							else if(index2==-1) {
 								String you = s.substring(index1+ 1);
+								//클라이언트가 종료전까지는 고정귓속말이 진행되야하므로 while문으로 반복해준다.
 								while(true) {
 									out.println("메세지를 입력하세요.귓속말 종료(x)");
+									/* 고정귀속말시 대상까지만 입력을 받았으므로 메세지나 종료할 수 있는 키워드를
+									  	입력받는 변수를 생성한다. */
 									String answer = in.readLine();
 //									answer = URLDecoder.decode(answer, "UTF-8");
 									if(answer.equalsIgnoreCase("x")) {
+										//'x'입력시 고정귓속말 종료되야하므로 while문을 탈출시킨다.
 										out.println("귓속말이 종료되었습니다.");
 										break;
 									}
 									else if(answer.equals("x")==false){
+										//'x'가 아닐경우 귓속말이 전달되야하므로 wisper()에 전달되는데
 										if(wisper(name, you, answer)) {
+											//이때 wisper()가 true값을 반환하면 귓속말이 전달되고 
+											//오라클 테이블에 입력이 된다.
 											new Insert_msg(name +"*"+ you, answer).execute();
 										}
 										else {
+											//wisper()가 false값을 반환하면 귓속말 전달대상이 없다고 출력된다.
 											out.println("대상이 없습니다. 이름을 다시 입력하세요.");
 											break;
 										}
 									}
 								}
 							}
+							//일반 귓속말
 							else {
 								String you = s.substring(index1+ 1, index2);
 								String talk = s.substring(index2+ 1);
@@ -258,6 +281,7 @@ class MultiServerT extends Thread {
 				 */
 				clientMap.remove(name);
 				sendAllMsg("", name +"님이 퇴장하셨습니다.");
+				//클라이언트가 퇴장을 하면 클라이언트의 이름만 저장한 chat_id_tb에서 이름이 지워져 다음입장때 이름이 사용할수있게 한다.
 				new delete_msg(name).execute();
 				//퇴장하는 클라이언트의 쓰레드명을 보여준다.
 				System.out.println(name +"["+Thread.currentThread().getName() +"] 퇴장");

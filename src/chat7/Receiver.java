@@ -26,9 +26,9 @@ public class Receiver extends Thread{
 	public void run() {
 		while(in!=null) {
 			try {
-				String n = in.readLine();
-				System.out.println(n);
-				if(n.equals("채팅이 종료됩니다.")) {
+				String a = in.readLine();
+				System.out.println(a);
+				if(a.equals("채팅이 종료됩니다.")) {
 					System.exit(0);
 				}
 			}
@@ -37,7 +37,8 @@ public class Receiver extends Thread{
 				break;
 			}
 			catch (Exception e) {
-				System.out.println("예외>Receiver>run1:"+e);
+//				System.out.println("예외>Receiver>run1:"+e);
+				e.printStackTrace();
 			}
 		}
 		try {

@@ -52,7 +52,8 @@ public class Sender extends Thread {
 //					System.out.println(e.getMessage());
 //				}
 				catch (Exception e) {
-					System.out.println("예외>Sender>run1:"+e);
+					e.printStackTrace();
+//					System.out.println("예외>Sender>run1:"+e);
 				}
 			}
 			out.close();
